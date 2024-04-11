@@ -56,8 +56,8 @@ EOF
 
     echo "Changing Hostname"
 
-    read -p "Enter your hostname (NOT FQDN): " -r primary_hostname
-    read -p "Enter your hostname[.]FQDN (without brackets):  " -r primary_domain
+    read -p "Enter your hostname (e.g. 'mail'): " -r primary_hostname
+    read -p "Enter your hostname[.]FQDN (e.g. 'mail.foo.example'):  " -r primary_domain
     read -p "Enter your External IP Address (or range).  Enter 10.0.0.0/8 if you are running on AWS:  " -r extIP
 
     IFS="." read -ra values <<< "$primary_domain"
@@ -203,16 +203,16 @@ function install_ssl_Cert() {
     letsencryptdomains=()
     end="false"
     i=0
-    read -p "Would you like to setup a wildcard SSL cert? (y/N)" answer
+    read -p "Would you like to setup a wildcard SSL cert (generally Yes)? (y/n)" answer
     answer=${answer:-n}
     case ${answer:0:1} in
         y|Y )
             cd /opt/letsencrypt
 
             echo $'\n[!]\tThis script creates a wildcard certificate for all subdomains to your domain'
-            echo $'\n[!]\tJust enter your core domain name (e.g. github.com)'
+            echo $'\n[!]\tJust enter your domain name (e.g. foo.example)'
             echo $'\n'
-            read -p "Enter your server's domain:  " -r domain
+            read -p "Enter your server's domain (e.g. foo.example):  " -r domain
             read -p "Are you using the NameCheap API for DNS? (y/N)" answer
             answer=${answer:-n}
              case ${answer:0:1} in
@@ -280,7 +280,7 @@ function install_postfix_dovecot() {
     echo $'###################################################################'                                                                 #'
     echo "# [ + ] 'mailcheck' password is:  ${password2}   #"
     echo $'###################################################################\n'
-    read -p "Enter your mail server's domain (everything after the '@' sign): " -r primary_domain
+    read -p "Enter your mail server's domain (everything after the '@' sign e.g. foo.example): " -r primary_domain
     echo $'\n'
     read -p "Enter IPs or CIDRs to allow Relay, such as other Teamservers or GoPhish External (if none just hit enter): " -r relay_ip
     echo $'\n[ ] Configuring Postfix'
@@ -520,7 +520,7 @@ function always_https() {
     wget -l 1 -O index.html https://blog.charitywater.org/donate > /dev/null 2>&1
     cd /var/www/html/archive
     wget -l 1 -O index.html https://blog.charitywater.org/archive > /dev/null 2>&1
-    read -p 'What is your URL (www.example.com)?  ' -r webaddr
+    read -p 'What is your URL (e.g.www.example.com)?  ' -r webaddr
     a2enmod rewrite
     service apache2 stop > /dev/null
     a2enmod ssl > /dev/null
@@ -962,7 +962,7 @@ EOF
 
 function sender_account() {
     echo $'\n'
-    read -p '[ ] What account will emails come from?  ' -r accountname
+    read -p '[ ] Enter an (all lowercase) account name for the email sender:' -r accountname
     accountpassword=$(openssl rand -hex 10 | base64)
     credentials="[ + ] ${accountname} password is:  ${accountpassword}"
     topline="###########################################################################"
