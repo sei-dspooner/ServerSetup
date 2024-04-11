@@ -626,13 +626,14 @@ function httpsc2doneright(){
     echo ""
     read -p "Enter your core domain name (e.g. github.com) [ENTER]: " -r domain
     echo ""
-    read -p "Enter a random password to be used for the Java Keystore [ENTER]: " -r password
-    echo ""
+    #read -p "Enter a random password to be used for the Java Keystore [ENTER]: " -r password
+    #echo ""
     cslocation="/opt/cobaltstrike"
     read -e -i "$cslocation" -p "Enter the folder-path to cobaltstrike (tip: Use tab complete) [ENTER]: " -r cobaltStrike
     cobaltStrike="${cobaltStrike:-$cslocation}"
     echo
 
+    password=$(openssl rand -hex 10 | base64)
     domainPkcs="$domain.p12"
     domainStore="$domain.store"
     cobaltStrikeProfilePath="$cobaltStrike/httpsProfile"
